@@ -12,7 +12,7 @@ function generateBase64Id(length) {
 	return result;
 }
 
-const host = "0.0.0.0";
+const host = "localhost";
 const port = 8000;
 
 const app = express();
@@ -34,7 +34,7 @@ app.post("/shorten", async (request, response) => {
 	const url = new URL(request.body.url);
 	// lire le fichier json
 	const content = await jsonfile.readFile(urlJson);
-	console.log("ici", Object.keys(content).length);
+	console.log("ici", request.get("host"));
 	// vérifie que l'url n'a pas déjà un identifiant attribué
 	const existingUrl = Object.keys(content).find(key => content[key] === url.href);
 	if (existingUrl) {
