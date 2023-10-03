@@ -12,7 +12,7 @@ function generateBase64Id(length) {
 	return result;
 }
 
-const host = "localhost";
+const host = "0.0.0.0";
 const port = 8000;
 
 const app = express();
