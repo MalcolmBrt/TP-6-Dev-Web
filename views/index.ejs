@@ -4,36 +4,51 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 	<title>Raccourcisseur d'URL</title>
 </head>
 
 <body>
-	<section class="section">
-		<div class="container">
-			<h1 class="title">devweb-shortener</h1>
-			<p class="subtitle">Il y a <%= url[2] %> liens.</p>
-			<form method="post" action="./shorten" id="submit-link">
-				<div class="field">
-					<label class="label" for="url">Entrez l'URL à raccourcir :</label>
+	<div class="container mt-4">
+		<h1 class="title">devweb-shortener</h1>
+		<p class="subtitle">Il y a <%= url[2] %> liens.</p>
+		<form method="post" action="./shorten" id="submit-link">
+			<div class="field">
+				<label class="label" for="url">Entrez l'URL à raccourcir :</label>
+				<div class="control">
+					<input class="input" name="url" id="url" type="url" placeholder="https://example.com" />
+				</div>
+			</div>
+			<div class="field">
+				<button type="submit" class="button is-primary">Soumettre</button>
+			</div>
+		</form>
+		<% if(url[0]){ %>
+			<div class="notification is-success mt-4">
+				<p>URL raccourcie :</p>
+				<div class="field has-addons">
 					<div class="control">
-						<input class="input" name="url" id="url" type="url" placeholder="https://example.com" />
+						<input id="shortened-url" class="input" type="text" value="<%= `${url[0]}/${url[1]}` %>" readonly>
+					</div>
+					<div class="control">
+						<button class="button fa-regular fa-copy" onclick="copyTextToClipboard()"></button>
 					</div>
 				</div>
-				<div class="field">
-					<div class="control">
-						<button type="submit" class="button is-primary">Soumettre</button>
-					</div>
-				</div>
-			</form>
-			<% if(url[0]){ %>
-				<div class="notification is-success mt-4">
-					<p>URL raccourcie :</p>
-					<a href="<%= url[1] %>" target="_blank"><%= `${url[0]}/${url[1]}` %></a>
-				</div>
+			</div>
 			<% } %>
-		</div>
-	</section>
+	</div>
+	<script>
+		async function copyTextToClipboard() {
+			const textToCopy = document.querySelector("#shortened-url").value;
+			try {
+				await navigator.clipboard.writeText(textToCopy);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	</script>
 </body>
 
 </html>

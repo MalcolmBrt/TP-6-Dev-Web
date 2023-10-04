@@ -12,7 +12,7 @@ function generateBase64Id(length) {
 	return result;
 }
 
-const host = "0.0.0.0";
+const host = process.env.NODE_ENV === "development" ? "localhost" : "0.0.0.0";
 const port = 8000;
 
 const app = express();
@@ -34,11 +34,10 @@ app.post("/shorten", async (request, response) => {
 	const url = new URL(request.body.url);
 	// lire le fichier json
 	const content = await jsonfile.readFile(urlJson);
-	console.log("ici", request.get("host"));
 	// vérifie que l'url n'a pas déjà un identifiant attribué
 	const existingUrl = Object.keys(content).find(key => content[key] === url.href);
 	if (existingUrl) {
-		return response.render("index", {url: [`${host}:${port}`, `${existingUrl}`, Object.keys(content).length]});
+		return response.render("index", {url: [request.get("host"), `${existingUrl}`, Object.keys(content).length]});
 	}
 	// si ce n'est pas le cas, génère un nouvel identifiant
 	// vérifie qu'il soit bien unique
@@ -51,7 +50,7 @@ app.post("/shorten", async (request, response) => {
 	// ajoute dans la "base de donnée"
 	content[id] = url.href;
 	await jsonfile.writeFile(urlJson, content);
-	return response.render("index", {url: [`${host}:${port}`, `${id}`, Object.keys(content).length]});
+	return response.render("index", {url: [request.get("host"), `${id}`, Object.keys(content).length]});
 });
 
 
